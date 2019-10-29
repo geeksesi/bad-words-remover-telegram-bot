@@ -12,5 +12,6 @@
  - change user permissions you want from the line with the comment `// user permissions` onwards
  - change user restriction time you want from the line with the comment `// user restriction time` onwards
  - add bad words you want to `badwords.php`
+ - Using `/sendmessage` command, admin can send messages to all users of the bot
  
  
