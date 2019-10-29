@@ -86,7 +86,7 @@ if ($Text == "/start" and $Tci == "private") {
         SendMessage($ChatId, "hi,\n this is start message");
     }else{
         SendChatAction($ChatId, "typing");
-        SendMessage($ChatId, "hi,\n this is start message, You've been in this bot before");
+        SendMessage($ChatId, "hi,\n this is start message");
     }
 } else {
     // bad words
