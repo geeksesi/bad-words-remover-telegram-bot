@@ -82,7 +82,7 @@ if ($Text == "/start" and $Tci == "private") {
     SendMessage($ChatId, "hi,\n this is start message");
 } else {
     // bad words
-    $BadWords = ['badwords','bad-words'];
+    require ("badwords.php");
     $Bwd = count($BadWords);
     for ($i = 0; $i < $Bwd; $i++) {
         if ((strstr(strtolower($Text), $BadWords[$i]) or strstr(strtolower($Caption), $BadWords[$i])) and ($Tci == "group" or $Tci == "supergroup")) {
