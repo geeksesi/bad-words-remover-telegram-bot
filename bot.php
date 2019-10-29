@@ -41,17 +41,38 @@ function sendChatAction($ChatId, $Action)
         'action' => $Action
     ]);
 }
+function restrictChatMember($ChatId, $UserId)
+{
+    bot('restrictChatMember', [
+        'chat_id' => $ChatId,
+        'user_id' => $UserId,
+        'can_send_messages' => false,
+        'can_send_media_messages' => false,
+        'can_send_polls' => false,
+        'can_send_other_messages' => false,
+        'can_add_web_page_previews' => false,
+        'can_change_info' => false,
+        'can_invite_users' => false,
+        'can_pin_messages' => false,
+        'until_date' => time()+86400, // until date for 24 hour from current time
 
+    ]);
+}
 // variables
 $Update = json_decode(file_get_contents('php://input'));
+$UserId = $Update->message->from->id;
+$FirstName = $Update->message->from->first_name;
+$LastName = $Update->message->from->last_name;
+$UserName = $Update->message->from->username;
 $Message = $Update->message;
 $ChatId = $Message->chat->id;
 $Text = $Message->text;
 $Caption = $Message->caption;
 $MessageId = $Message->message_id;
+$Tci = $Update->message->chat->type;
 
 // start
-if ($Text == "/start") {
+if ($Text == "/start" and $Tci == "private") {
     sendChatAction($ChatId, "typing");
     SendMessage($ChatId, "hi,\n this is start message");
 } else {
@@ -59,8 +80,11 @@ if ($Text == "/start") {
     $BadWords = ['تلگرام ضد فیلتر','تلگرام بدون فیلتر'];
     $Bwd = count($BadWords);
     for ($i = 0; $i < $Bwd; $i++) {
-        if (strstr(strtolower($Text), $BadWords[$i]) or strstr(strtolower($Caption), $BadWords[$i])) {
+        if ((strstr(strtolower($Text), $BadWords[$i]) or strstr(strtolower($Caption), $BadWords[$i])) and ($Tci == "group" or $Tci == "supergroup")) {
             DeleteMessage($ChatId, $MessageId);
+            sendChatAction($ChatId, "typing");
+            SendMessage($ChatId, "User $FirstName $LastName / @$UserName limited!");
+            restrictChatMember($ChatId,$UserId);
             die();
         }
     }
