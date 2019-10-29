@@ -1,6 +1,6 @@
 <?php
-define('API_KEY', 'YOUR_BOT_TOKEN'); //add_token
-define('ADMIN_ID', 'YOUR_ADMIN_ID'); //ADMIN ID
+define('API_KEY', 'YOUR_BOT_TOKEN'); //add token
+define('ADMIN_ID', 'ADMIN_ID'); //admin id
 // main function
 function Bot($Method, $Datas = [])
 {
