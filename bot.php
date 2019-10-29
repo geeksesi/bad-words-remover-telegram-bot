@@ -1,51 +1,55 @@
 <?php
 define('API_KEY', 'Your_Token'); //add_token
 // main function
-function bot($method, $datas = [])
+function Bot($Method, $Datas = [])
 {
-    $url = "https://api.telegram.org/bot" . API_KEY . "/" . $method;
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $datas);
-    $res = curl_exec($ch);
-    if (curl_error($ch)) {
-        var_dump(curl_error($ch));
+    $Url = "https://api.telegram.org/bot" . API_KEY . "/" . $Method;
+    $Ch = curl_init();
+    curl_setopt($Ch, CURLOPT_URL, $Url);
+    curl_setopt($Ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($Ch, CURLOPT_POSTFIELDS, $Datas);
+    $Res = curl_exec($Ch);
+    if (curl_error($Ch)) {
+        var_dump(curl_error($Ch));
     } else {
-        return json_decode($res);
+        return json_decode($Res);
     }
 }
 
 // functions
 function SendMessage($ChatId, $Text)
 {
-    bot('sendMessage', [
+    Bot(
+        'sendMessage',
+        [
             'chat_id' => $ChatId,
             'text' => $Text,
-            'parse_mode' => 'MarkDown']
+            'parse_mode' => 'MarkDown'
+        ]
     );
 }
 
 function DeleteMessage($ChatId, $MessageId)
 {
-    bot('deleteMessage', [
+    Bot('deleteMessage', [
         'chat_id' => $ChatId,
         'message_id' => $MessageId
     ]);
 }
 
-function sendChatAction($ChatId, $Action)
+function SendChatAction($ChatId, $Action)
 {
-    bot('sendChatAction', [
+    Bot('sendChatAction', [
         'chat_id' => $ChatId,
         'action' => $Action
     ]);
 }
-function restrictChatMember($ChatId, $UserId)
+function RestrictChatMember($ChatId, $UserId)
 {
-    bot('restrictChatMember', [
+    Bot('restrictChatMember', [
         'chat_id' => $ChatId,
         'user_id' => $UserId,
+        // user permissions
         'can_send_messages' => false,
         'can_send_media_messages' => false,
         'can_send_polls' => false,
@@ -54,7 +58,8 @@ function restrictChatMember($ChatId, $UserId)
         'can_change_info' => false,
         'can_invite_users' => false,
         'can_pin_messages' => false,
-        'until_date' => time()+86400, // until date for 24 hour from current time
+        // user restriction time
+        'until_date' => time() + 86400, // until date for 24 hour from current time (60*60*24)
 
     ]);
 }
@@ -73,18 +78,18 @@ $Tci = $Update->message->chat->type;
 
 // start
 if ($Text == "/start" and $Tci == "private") {
-    sendChatAction($ChatId, "typing");
+    SendChatAction($ChatId, "typing");
     SendMessage($ChatId, "hi,\n this is start message");
 } else {
     // bad words
-    $BadWords = ['تلگرام ضد فیلتر','تلگرام بدون فیلتر'];
+    $BadWords = ['تلگرام ضد فیلتر', 'تلگرام بدون فیلتر'];
     $Bwd = count($BadWords);
     for ($i = 0; $i < $Bwd; $i++) {
         if ((strstr(strtolower($Text), $BadWords[$i]) or strstr(strtolower($Caption), $BadWords[$i])) and ($Tci == "group" or $Tci == "supergroup")) {
             DeleteMessage($ChatId, $MessageId);
-            sendChatAction($ChatId, "typing");
+            SendChatAction($ChatId, "typing");
             SendMessage($ChatId, "User $FirstName $LastName / @$UserName limited!");
-            restrictChatMember($ChatId,$UserId);
+            RestrictChatMember($ChatId, $UserId);
             die();
         }
     }
