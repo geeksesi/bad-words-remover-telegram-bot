@@ -59,7 +59,7 @@ function RestrictChatMember($ChatId, $UserId)
         'can_invite_users' => false,
         'can_pin_messages' => false,
         // user restriction time
-        'until_date' => time() + 86400, // until date for 24 hour from current time (60*60*24)
+        'until_date' => time() + (60*60*24), // until date based on hours from current time (like 24 hours)
 
     ]);
 }
