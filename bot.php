@@ -1,5 +1,6 @@
 <?php
-define('API_KEY', 'Your_Token'); //add_token
+define('API_KEY', 'YOUR_BOT_TOKEN'); //add_token
+define('ADMIN_ID', 'YOUR_ADMIN_ID'); //ADMIN ID
 // main function
 function Bot($Method, $Datas = [])
 {
@@ -64,6 +65,7 @@ function RestrictChatMember($ChatId, $UserId)
     ]);
 }
 // variables
+@mkdir("data");
 $Update = json_decode(file_get_contents('php://input'));
 $UserId = $Update->message->from->id;
 $FirstName = $Update->message->from->first_name;
@@ -75,20 +77,39 @@ $Text = $Message->text;
 $Caption = $Message->caption;
 $MessageId = $Message->message_id;
 $Tci = $Update->message->chat->type;
-
+$UsersList = file_get_contents("data/users.txt");
+$File = json_decode(file_get_contents("data/$ChatId.json"),true);
+$Step = $File["userinfo"]["step"];
 // start
 if ($Text == "/start" and $Tci == "private") {
-    if (!file_exists("data/$ChatId.json")){
-        $Step["userinfo"]["step"]= "start";
-        $Step = json_encode($Step,true);
-        file_put_contents("data/$ChatId.json",$Step);
+    $UsersExplode = explode("\n",$UsersList);
+        if(!in_array($ChatId, $UsersExplode)){
+            $AddUsers = $ChatId."\n";
+            file_put_contents("data/users.txt",$AddUsers,FILE_APPEND);
+        }
+        // set step
+        $Data["userinfo"]["step"]= "start";
+        $Data = json_encode($Data,true);
+        file_put_contents("data/$ChatId.json",$Data);
         SendChatAction($ChatId, "typing");
         SendMessage($ChatId, "hi,\n this is start message");
-    }else{
-        SendChatAction($ChatId, "typing");
-        SendMessage($ChatId, "hi,\n this is start message");
+} elseif ($Text == "/sendmessage" and $Tci == "private" and $ChatId == ADMIN_ID){
+    // set step
+    $Data["userinfo"]["step"]= "sendmessage";
+    $Data = json_encode($Data,true);
+    file_put_contents("data/$ChatId.json",$Data);
+    SendChatAction($ChatId, "typing");
+    SendMessage($ChatId, "Please send your message");
+}elseif (!empty($Text) and $Step == "sendmessage" and $Tci == "private" and $ChatId == ADMIN_ID){
+    $path = "data/users.txt";
+    $file = fopen($path, 'r');
+    $data = fread($file, filesize($path));
+    fclose($file);
+    $lines =  explode("\n",$data);
+    foreach ($lines as $line){
+        SendMessage($line, $Text);
     }
-} else {
+}else {
     // bad words
     require ("badwords.php");
     $Bwd = count($BadWords);
