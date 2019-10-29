@@ -84,6 +84,9 @@ if ($Text == "/start" and $Tci == "private") {
         file_put_contents("data/$ChatId.json",$Step);
         SendChatAction($ChatId, "typing");
         SendMessage($ChatId, "hi,\n this is start message");
+    }else{
+        SendChatAction($ChatId, "typing");
+        SendMessage($ChatId, "hi,\n this is start message, You've been in this bot before");
     }
 } else {
     // bad words
