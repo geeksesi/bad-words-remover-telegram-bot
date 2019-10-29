@@ -55,8 +55,8 @@ function RestrictChatMember($ChatId, $UserId)
         'can_send_polls' => false,
         'can_send_other_messages' => false,
         'can_add_web_page_previews' => false,
-        'can_change_info' => false,
-        'can_invite_users' => false,
+        'can_change_info' => true,
+        'can_invite_users' => true,
         'can_pin_messages' => false,
         // user restriction time
         'until_date' => time() + (60*60*24), // until date based on hours from current time (like 24 hours)
