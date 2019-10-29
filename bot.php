@@ -69,8 +69,8 @@ $UserId = $Update->message->from->id;
 $FirstName = $Update->message->from->first_name;
 $LastName = $Update->message->from->last_name;
 $UserName = $Update->message->from->username;
+$ChatId = isset($Update->callback_query->message->chat->id)?$Update->callback_query->message->chat->id:$Update->message->chat->id;
 $Message = $Update->message;
-$ChatId = $Message->chat->id;
 $Text = $Message->text;
 $Caption = $Message->caption;
 $MessageId = $Message->message_id;
@@ -78,8 +78,13 @@ $Tci = $Update->message->chat->type;
 
 // start
 if ($Text == "/start" and $Tci == "private") {
-    SendChatAction($ChatId, "typing");
-    SendMessage($ChatId, "hi,\n this is start message");
+    if (!file_exists("data/$ChatId.json")){
+        $Step["userinfo"]["step"]= "start";
+        $Step = json_encode($Step,true);
+        file_put_contents("data/$ChatId.json",$Step);
+        SendChatAction($ChatId, "typing");
+        SendMessage($ChatId, "hi,\n this is start message");
+    }
 } else {
     // bad words
     require ("badwords.php");
