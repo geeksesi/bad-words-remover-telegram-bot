@@ -1,6 +1,7 @@
-
+.idea/
 .idea/workspace.xml
 .idea/modules.xml
 .idea/misc.xml
 .idea/bad-words-remover-telegram-bot.iml
 .idea/vcs.xml
+_config.yml
