@@ -1,5 +1,5 @@
 <?php
-include __DIR__.'/config.php';
+include __DIR__.'/autoload.php';
 
 // main function
 function Bot($Method, $Datas = [])

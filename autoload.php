@@ -3,7 +3,7 @@
 include __DIR__ . '/config.php';
 
 // databases
-include __DIR__ . '/db/Chats.php';
+include __DIR__ . '/db/ChatsDB.php';
 include __DIR__ . '/db/DB.php';
 include __DIR__ . '/db/migration.php';
 
