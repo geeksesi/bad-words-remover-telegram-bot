@@ -7,6 +7,7 @@
 
 define('BOT_TOKEN', '');
 define('ADMIN_ID', '');
+define('RESTRICT_TIME', ''); //by hour
 // db is mysql
 define('DB_ADDRESS', '127.0.0.1');
 define('DB_PORT', '3306');

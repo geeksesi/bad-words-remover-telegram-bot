@@ -50,7 +50,6 @@ function restrictchatmember($chatid, $userid)
     bot('restrictChatMember', [
         'chat_id' => $chatid,
         'user_id' => $userid,
-        // user permissions
         'can_send_messages' => false,
         'can_send_media_messages' => false,
         'can_send_polls' => false,
@@ -59,8 +58,7 @@ function restrictchatmember($chatid, $userid)
         'can_change_info' => true,
         'can_invite_users' => true,
         'can_pin_messages' => false,
-        // user restriction time
-        'until_date' => time() + (60 * 60 * 24), // until date based on hours from current time (like 24 hours)
+        'until_date' => time() + (60*60*RESTRICT_TIME),
 
     ]);
 }
@@ -104,6 +102,10 @@ if ($text == "/start" and $tci == "private") {
     sendchataction($chatid, "typing");
     sendmessage($chatid, "Please send your message");
 } elseif (!empty($text) and $step == "sendmessage" and $tci == "private" and $chatid == ADMIN_ID) {
+    // set step
+    $data["userinfo"]["step"] = "start";
+    $data = json_encode($data, true);
+    file_put_contents("data/$chatid.json", $data);
     $path = "data/users.txt";
     $file = fopen($path, 'r');
     $data = fread($file, filesize($path));
@@ -112,6 +114,24 @@ if ($text == "/start" and $tci == "private") {
     foreach ($lines as $line) {
         sendmessage($line, $text);
     }
+    sendmessage($chatid, "Your message sent to all users. /start again");
+} elseif ($text == "/statistics" and $tci == "private" and $chatid == ADMIN_ID) {
+    // set step
+    $data["userinfo"]["step"] = "statistics";
+    $data = json_encode($data, true);
+    file_put_contents("data/$chatid.json", $data);
+    $file="data/users.txt";
+    $linecount = -1;
+    $handle = fopen($file, "r");
+    while(!feof($handle)){
+        $line = fgets($handle);
+        $linecount++;
+    }
+
+    fclose($handle);
+
+    sendchataction($chatid, "typing");
+    sendmessage($chatid, "Number of users is $linecount");
 } else {
     // bad words
     require("badwords.php");
@@ -121,7 +141,7 @@ if ($text == "/start" and $tci == "private") {
             deletemessage($chatid, $messageid);
             sendchataction($chatid, "typing");
             sendmessage($chatid, "User $firstname $lastname / @$username limited!");
-            restrictchatmember($chatid, $UserId);
+            restrictchatmember($chatid, $userid);
             die();
         }
     }
