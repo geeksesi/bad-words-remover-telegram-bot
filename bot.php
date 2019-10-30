@@ -1,10 +1,10 @@
 <?php
-define('API_KEY', 'YOUR_BOT_TOKEN'); //add token
-define('ADMIN_ID', 'ADMIN_ID'); //admin id
+include __DIR__.'/config.php';
+
 // main function
 function Bot($Method, $Datas = [])
 {
-    $Url = "https://api.telegram.org/bot" . API_KEY . "/" . $Method;
+    $Url = "https://api.telegram.org/bot" . BOT_TOKEN . "/" . $Method;
     $Ch = curl_init();
     curl_setopt($Ch, CURLOPT_URL, $Url);
     curl_setopt($Ch, CURLOPT_RETURNTRANSFER, true);
