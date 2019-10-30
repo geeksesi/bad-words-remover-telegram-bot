@@ -12,6 +12,6 @@ Rename `config-sample.php` to `config.php` and re fill defines
 ## Help
  - Add bad words you want to `badwords.php`
  - Using `/sendmessage` command, admin can send messages to all users of the bot
- - Using `/statistic` command, admin can see statistics on the number of users the bot
+ - Using `/statistics` command, admin can see statistics on the number of users the bot
  
  
