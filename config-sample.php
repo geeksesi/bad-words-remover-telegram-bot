@@ -1,4 +1,5 @@
 <?php
+
 /**
  * define variables to personal usage
  * Change config-sample.php to config.php and change this defines with your data
@@ -13,4 +14,3 @@ define('DB_NAME', 'your db name here');
 define('DB_USERNAME', 'your db user name here');
 define('DB_PASSWORD', 'your db password here');
 define('DB_PREFIX', 'BWRT_');
-

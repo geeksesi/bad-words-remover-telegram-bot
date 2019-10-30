@@ -1,2 +1,2 @@
 <?php
-$BadWords = ['badwords','bad-words'];
+$badwords = ['badwords', 'bad-words'];

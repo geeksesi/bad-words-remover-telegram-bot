@@ -4,7 +4,7 @@ class ChatsDB
 {
     private $db;
     public function __construct($_db)
-    { 
+    {
         $this->db = $_db;
     }
 

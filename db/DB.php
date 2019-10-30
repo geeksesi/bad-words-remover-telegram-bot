@@ -16,6 +16,4 @@ class DB
         }
         $this->chats = new ChatsDB($this->db);
     }
-
-    
 }

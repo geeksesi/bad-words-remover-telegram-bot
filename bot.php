@@ -1,55 +1,55 @@
 <?php
-include __DIR__.'/autoload.php';
+include __DIR__ . '/autoload.php';
 
 // main function
-function Bot($Method, $Datas = [])
+function bot($method, $datas = [])
 {
-    $Url = "https://api.telegram.org/bot" . BOT_TOKEN . "/" . $Method;
-    $Ch = curl_init();
-    curl_setopt($Ch, CURLOPT_URL, $Url);
-    curl_setopt($Ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($Ch, CURLOPT_POSTFIELDS, $Datas);
-    $Res = curl_exec($Ch);
-    if (curl_error($Ch)) {
-        var_dump(curl_error($Ch));
+    $url = "https://api.telegram.org/bot" . BOT_TOKEN . "/" . $method;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $datas);
+    $res = curl_exec($ch);
+    if (curl_error($ch)) {
+        var_dump(curl_error($ch));
     } else {
-        return json_decode($Res);
+        return json_decode($res);
     }
 }
 
 // functions
-function SendMessage($ChatId, $Text)
+function sendmessage($chatid, $text)
 {
-    Bot(
+    bot(
         'sendMessage',
         [
-            'chat_id' => $ChatId,
-            'text' => $Text,
+            'chat_id' => $chatid,
+            'text' => $text,
             'parse_mode' => 'MarkDown'
         ]
     );
 }
 
-function DeleteMessage($ChatId, $MessageId)
+function deletemessage($chatid, $messageid)
 {
-    Bot('deleteMessage', [
-        'chat_id' => $ChatId,
-        'message_id' => $MessageId
+    bot('deleteMessage', [
+        'chat_id' => $chatid,
+        'message_id' => $messageid
     ]);
 }
 
-function SendChatAction($ChatId, $Action)
+function sendchataction($chatid, $action)
 {
-    Bot('sendChatAction', [
-        'chat_id' => $ChatId,
-        'action' => $Action
+    bot('sendChatAction', [
+        'chat_id' => $chatid,
+        'action' => $action
     ]);
 }
-function RestrictChatMember($ChatId, $UserId)
+function restrictchatmember($chatid, $userid)
 {
-    Bot('restrictChatMember', [
-        'chat_id' => $ChatId,
-        'user_id' => $UserId,
+    bot('restrictChatMember', [
+        'chat_id' => $chatid,
+        'user_id' => $userid,
         // user permissions
         'can_send_messages' => false,
         'can_send_media_messages' => false,
@@ -60,68 +60,68 @@ function RestrictChatMember($ChatId, $UserId)
         'can_invite_users' => true,
         'can_pin_messages' => false,
         // user restriction time
-        'until_date' => time() + (60*60*24), // until date based on hours from current time (like 24 hours)
+        'until_date' => time() + (60 * 60 * 24), // until date based on hours from current time (like 24 hours)
 
     ]);
 }
 // variables
 @mkdir("data");
-$Update = json_decode(file_get_contents('php://input'));
-if(!$Update){
+$update = json_decode(file_get_contents('php://input'));
+if (!$update) {
     die();
 }
-$UserId = $Update->message->from->id;
-$FirstName = $Update->message->from->first_name;
-$LastName = $Update->message->from->last_name;
-$UserName = $Update->message->from->username;
-$ChatId = isset($Update->callback_query->message->chat->id)?$Update->callback_query->message->chat->id:$Update->message->chat->id;
-$Message = $Update->message;
-$Text = $Message->text;
-$Caption = $Message->caption;
-$MessageId = $Message->message_id;
-$Tci = $Update->message->chat->type;
-$UsersList = file_get_contents("data/users.txt");
-$File = json_decode(file_get_contents("data/$ChatId.json"),true);
-$Step = $File["userinfo"]["step"];
+$userid = $update->message->from->id;
+$firstname = $update->message->from->first_name;
+$lastname = $update->message->from->last_name;
+$username = $update->message->from->username;
+$chatid = isset($update->callback_query->message->chat->id) ? $update->callback_query->message->chat->id : $update->message->chat->id;
+$message = $update->message;
+$text = $message->text;
+$caption = $message->caption;
+$messageid = $message->message_id;
+$tci = $update->message->chat->type;
+$userslist = file_get_contents("data/users.txt");
+$file = json_decode(file_get_contents("data/$chatid.json"), true);
+$step = $file["userinfo"]["step"];
 // start
-if ($Text == "/start" and $Tci == "private") {
-    $UsersExplode = explode("\n",$UsersList);
-        if(!in_array($ChatId, $UsersExplode)){
-            $AddUsers = $ChatId."\n";
-            file_put_contents("data/users.txt",$AddUsers,FILE_APPEND);
-        }
-        // set step
-        $Data["userinfo"]["step"]= "start";
-        $Data = json_encode($Data,true);
-        file_put_contents("data/$ChatId.json",$Data);
-        SendChatAction($ChatId, "typing");
-        SendMessage($ChatId, "hi,\n this is start message");
-} elseif ($Text == "/sendmessage" and $Tci == "private" and $ChatId == ADMIN_ID){
+if ($text == "/start" and $tci == "private") {
+    $usersexplode = explode("\n", $userslist);
+    if (!in_array($chatid, $usersexplode)) {
+        $addUsers = $chatid . "\n";
+        file_put_contents("data/users.txt", $addUsers, FILE_APPEND);
+    }
     // set step
-    $Data["userinfo"]["step"]= "sendmessage";
-    $Data = json_encode($Data,true);
-    file_put_contents("data/$ChatId.json",$Data);
-    SendChatAction($ChatId, "typing");
-    SendMessage($ChatId, "Please send your message");
-}elseif (!empty($Text) and $Step == "sendmessage" and $Tci == "private" and $ChatId == ADMIN_ID){
+    $data["userinfo"]["step"] = "start";
+    $data = json_encode($data, true);
+    file_put_contents("data/$chatid.json", $data);
+    sendchataction($chatid, "typing");
+    sendmessage($chatid, "hi,\n this is start message");
+} elseif ($text == "/sendmessage" and $tci == "private" and $chatid == ADMIN_ID) {
+    // set step
+    $data["userinfo"]["step"] = "sendmessage";
+    $data = json_encode($data, true);
+    file_put_contents("data/$chatid.json", $data);
+    sendchataction($chatid, "typing");
+    sendmessage($chatid, "Please send your message");
+} elseif (!empty($text) and $step == "sendmessage" and $tci == "private" and $chatid == ADMIN_ID) {
     $path = "data/users.txt";
     $file = fopen($path, 'r');
     $data = fread($file, filesize($path));
     fclose($file);
-    $lines =  explode("\n",$data);
-    foreach ($lines as $line){
-        SendMessage($line, $Text);
+    $lines =  explode("\n", $data);
+    foreach ($lines as $line) {
+        sendmessage($line, $text);
     }
-}else {
+} else {
     // bad words
-    require ("badwords.php");
-    $Bwd = count($BadWords);
-    for ($i = 0; $i < $Bwd; $i++) {
-        if ((strstr(strtolower($Text), $BadWords[$i]) or strstr(strtolower($Caption), $BadWords[$i])) and ($Tci == "group" or $Tci == "supergroup")) {
-            DeleteMessage($ChatId, $MessageId);
-            SendChatAction($ChatId, "typing");
-            SendMessage($ChatId, "User $FirstName $LastName / @$UserName limited!");
-            RestrictChatMember($ChatId, $UserId);
+    require("badwords.php");
+    $bwd = count($badwords);
+    for ($i = 0; $i < $bwd; $i++) {
+        if ((strstr(strtolower($text), $badwords[$i]) or strstr(strtolower($caption), $badwords[$i])) and ($tci == "group" or $tci == "supergroup")) {
+            deletemessage($chatid, $messageid);
+            sendchataction($chatid, "typing");
+            sendmessage($chatid, "User $firstname $lastname / @$username limited!");
+            restrictchatmember($chatid, $UserId);
             die();
         }
     }
