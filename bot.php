@@ -67,6 +67,9 @@ function RestrictChatMember($ChatId, $UserId)
 // variables
 @mkdir("data");
 $Update = json_decode(file_get_contents('php://input'));
+if(!$Update){
+    die();
+}
 $UserId = $Update->message->from->id;
 $FirstName = $Update->message->from->first_name;
 $LastName = $Update->message->from->last_name;
