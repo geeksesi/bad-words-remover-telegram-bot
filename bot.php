@@ -45,6 +45,7 @@ function sendchataction($chatid, $action)
         'action' => $action
     ]);
 }
+
 function restrictchatmember($chatid, $userid)
 {
     bot('restrictChatMember', [
@@ -58,10 +59,11 @@ function restrictchatmember($chatid, $userid)
         'can_change_info' => true,
         'can_invite_users' => true,
         'can_pin_messages' => false,
-        'until_date' => time() + (60*60*RESTRICT_TIME),
+        'until_date' => time() + (60 * 60 * RESTRICT_TIME),
 
     ]);
 }
+
 // variables
 @mkdir("data");
 $update = json_decode(file_get_contents('php://input'));
@@ -110,7 +112,7 @@ if ($text == "/start" and $tci == "private") {
     $file = fopen($path, 'r');
     $data = fread($file, filesize($path));
     fclose($file);
-    $lines =  explode("\n", $data);
+    $lines = explode("\n", $data);
     foreach ($lines as $line) {
         sendmessage($line, $text);
     }
@@ -120,10 +122,10 @@ if ($text == "/start" and $tci == "private") {
     $data["userinfo"]["step"] = "statistics";
     $data = json_encode($data, true);
     file_put_contents("data/$chatid.json", $data);
-    $file="data/users.txt";
+    $file = "data/users.txt";
     $linecount = -1;
     $handle = fopen($file, "r");
-    while(!feof($handle)){
+    while (!feof($handle)) {
         $line = fgets($handle);
         $linecount++;
     }
