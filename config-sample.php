@@ -12,4 +12,5 @@ define('DB_PORT', '3306');
 define('DB_NAME', 'your db name here');
 define('DB_USERNAME', 'your db user name here');
 define('DB_PASSWORD', 'your db password here');
+define('DB_PREFIX', 'BWRT_');
 
