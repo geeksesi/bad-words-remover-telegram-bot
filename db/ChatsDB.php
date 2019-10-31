@@ -10,6 +10,13 @@ class ChatsDB
         $this->table_name = DB_PREFIX . "chats";
     }
 
+    /**
+     * this will make a table in your database
+     *
+     * @param [type] $_db
+     * @param string $_prefix
+     * @return void
+     */
     public static function migration($_db, string $_prefix)
     {
         $prefix = (substr($_prefix, -1) !== "_") ? $_prefix . "_" : $_prefix;
@@ -25,9 +32,16 @@ class ChatsDB
         return $_db->query($sql);
     }
 
+    /**
+     * add an chat to table
+     *
+     * @param integer $_chat_id = [group | channel | supergroup || private]
+     * @param string $_chat_type
+     * @return boolean
+     */
     public function add(int $_chat_id, string $_chat_type)
     {
-        if ($_chat_type !== "group" || $_chat_type !== "“channel”" || $_chat_type !== "“supergroup”" || $_chat_type !== "private") {
+        if ($_chat_type !== "group" || $_chat_type !== "channel" || $_chat_type !== "supergroup" || $_chat_type !== "private") {
             return false;
         }
         $sql_query = "INSERT INTO " . $this->table_name . "(chat_id, chat_type, timestap) VALUES ('" . $_chat_id . "', '" . $_chat_type . "', '" . time() . "')";
@@ -38,10 +52,18 @@ class ChatsDB
         return $result;
     }
 
+    /**
+     * get all chats or get some of them by type
+     *
+     * @param string $_chat_type
+     * @return boolean|mysqli_result
+     * 
+     * to use read this : https://www.php.net/manual/en/mysqli.query.php
+     */
     public function get(string $_chat_type = null)
     {
         if ($_chat_type !== null) {
-            if ($_chat_type !== "group" || $_chat_type !== "“channel”" || $_chat_type !== "“supergroup”" || $_chat_type !== "private") {
+            if ($_chat_type !== "group" || $_chat_type !== "channel" || $_chat_type !== "supergroup" || $_chat_type !== "private") {
                 return false;
             }
         }
