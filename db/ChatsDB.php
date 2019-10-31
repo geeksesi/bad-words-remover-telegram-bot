@@ -9,7 +9,7 @@ class ChatsDB
         $this->db = $_db;
     }
 
-    public static function migration(string $_charset, string $_prefix)
+    public static function migration($_db, string $_charset, string $_prefix)
     {
         $prefix = (substr($_prefix, -1) !== "_") ? $_prefix . "_" : $_prefix;
         $table_name = $prefix . "chats";
@@ -19,6 +19,7 @@ class ChatsDB
             timestap      BIGINT(12)      NOT NULL UNSIGNED,            
             PRIMARY KEY  (id)
           ) $_charset;";
-        return $sql;
+
+        return $_db->query($sql);
     }
 }
